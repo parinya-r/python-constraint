@@ -39,6 +39,7 @@
 """
 import random
 import copy
+import sys
 
 __all__ = ["Problem", "Variable", "Domain", "Unassigned",
            "Solver", "BacktrackingSolver", "RecursiveBacktrackingSolver",
@@ -514,10 +515,16 @@ class BacktrackingSolver(Solver):
 
     def getSolution(self, domains, constraints, vconstraints):
         iter = self.getSolutionIter(domains, constraints, vconstraints)
-        try:
-            return next(iter)
-        except StopIteration:
-            return None
+        if sys.version_info >= (3, 0):
+            try:
+                return next(iter)
+            except StopIteration:
+                return None
+        else:
+            try:
+                return iter.next()
+            except StopIteration:
+                return None
 
     def getSolutions(self, domains, constraints, vconstraints):
         return list(self.getSolutionIter(domains, constraints, vconstraints))
